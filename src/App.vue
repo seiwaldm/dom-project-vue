@@ -1,23 +1,23 @@
 <template>
   <TheHeader></TheHeader>
+  <TheMainSection></TheMainSection>
 </template>
 
 <script>
 import TheHeader from "./components/TheHeader.vue";
+import TheMainSection from "./components/TheMainSection.vue";
 
 export default {
   name: "App",
   components: {
     TheHeader,
+    TheMainSection,
   },
 };
 </script>
 
 <style>
 @import url("https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css");
-
-body {
-}
 
 #app {
   display: grid;
