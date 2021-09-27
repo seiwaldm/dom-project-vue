@@ -1,10 +1,11 @@
 import { createApp } from 'vue';
 import { createStore } from 'vuex';
-import { vuexfireMutations, firebaseAction } from 'vuexfire';
-import { db } from "./db";
 
+import VuexPersistence from 'vuex-persist';
 
 import App from './App.vue';
+
+const vuexLocal = new VuexPersistence();
 
 
 const store = createStore({
@@ -99,7 +100,8 @@ const store = createStore({
         getLists(state) {
             return state.lists;
         }
-    }
+    },
+    plugins: [vuexLocal.plugin]
 });
 
 const app = createApp(App);
