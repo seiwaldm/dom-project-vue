@@ -1,16 +1,21 @@
 import { createApp } from 'vue';
 import { createStore } from 'vuex';
-import { vuexfireMutations, firebaseAction } from 'vuexfire';
-import { db } from "./db";
-
 
 import App from './App.vue';
-
 
 const store = createStore({
     state() {
         return {
-            lists: [],
+            lists: [{
+                name: "Einkaufsliste",
+                list: [{ name: "Kaffee" }, { name: "Äpfel" }, { name: "Bananen" }],
+                active: true
+                },
+                {
+                name: "Lernen",
+                list: [{ name: "vue" }, { name: "react" }, { name: "angular" }],
+                active: false
+                }],
 
             filter: ""
         };
@@ -19,8 +24,6 @@ const store = createStore({
     //die eigentlichen "setter"
     //alle Veränderungen am store.state laufen über mutations
     mutations: {
-
-        ...vuexfireMutations,
         deleteItem(state, toDelete) {
             store.getters.getActiveList.list = store.getters.getActiveList.list.filter(item => {
                 return item.name !== toDelete;
@@ -72,17 +75,8 @@ const store = createStore({
         },
         addList(context, newList) {
             context.commit("addList", newList);
-        },
-        bindListsRef: firebaseAction(context => {
-      // context contains all original properties like commit, state, etc
-      // and adds `bindFirebaseRef` and `unbindFirebaseRef`
-      // we return the promise returned by `bindFirebaseRef` that will
-      // resolve once data is ready
-            
-            context.bindFirebaseRef('lists', db.ref('lists'));
-        }),
+        }
     },
-    
 
     //sind wie computed properties in components
     //führen immer irgendwelche Berechnungen oÄ durch
@@ -95,9 +89,6 @@ const store = createStore({
         },
         getActiveList(state) {  
             return state.lists.filter(list => list.active === true)[0];
-        },
-        getLists(state) {
-            return state.lists;
         }
     }
 });

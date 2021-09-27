@@ -25,8 +25,7 @@ export default {
   components: { ItemList, TheControlSection, TheListTabs },
   computed: {
     lists() {
-      // return this.$store.state.lists;
-      return this.$store.getters.getLists;
+      return this.$store.state.lists;
     },
     activeList() {
       return this.$store.getters.getActiveList.name;
