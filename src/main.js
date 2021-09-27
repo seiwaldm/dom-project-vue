@@ -1,7 +1,10 @@
 import { createApp } from 'vue';
 import { createStore } from 'vuex';
+import VuexPersistence from 'vuex-persist';
 
 import App from './App.vue';
+
+const vuexLocal = new VuexPersistence();
 
 const store = createStore({
     state() {
@@ -90,7 +93,8 @@ const store = createStore({
         getActiveList(state) {  
             return state.lists.filter(list => list.active === true)[0];
         }
-    }
+    },
+    plugins: [vuexLocal.plugin]
 });
 
 const app = createApp(App);
