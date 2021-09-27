@@ -1,0 +1,34 @@
+{
+  "lists": [
+    {
+      "name": "Einkaufsliste",
+      "list": [
+        {
+          "name": "Kaffee"
+        },
+        {
+          "name": "Äpfel"
+        },
+        {
+          "name": "Bananen"
+        }
+      ],
+      "active": true
+    },
+    {
+      "name": "Lernen",
+      "list": [
+        {
+          "name": "vue"
+        },
+        {
+          "name": "react"
+        },
+        {
+          "name": "angular"
+        }
+      ],
+      "active": false
+    }
+  ]
+}

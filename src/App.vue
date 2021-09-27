@@ -13,6 +13,9 @@ export default {
     TheHeader,
     TheMainSection,
   },
+  beforeCreate() {
+    this.$store.dispatch("bindListsRef");
+  },
 };
 </script>
 
