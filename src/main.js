@@ -79,7 +79,7 @@ const store = createStore({
       // we return the promise returned by `bindFirebaseRef` that will
       // resolve once data is ready
             
-            context.bindFirebaseRef('lists', db.ref('lists'));
+            return context.bindFirebaseRef('lists', db.ref('lists'));
         }),
     },
     
