@@ -1,6 +1,5 @@
 import { createApp } from 'vue';
 import { createStore } from 'vuex';
-import { vuexfireMutations, firebaseAction } from 'vuexfire';
 import { db } from "./db";
 
 
@@ -12,7 +11,11 @@ const store = createStore({
         return {
             lists: [],
 
-            filter: ""
+            listKeys: [],
+
+            filter: "",
+
+            activeList: ""
         };
     },
 
@@ -20,7 +23,6 @@ const store = createStore({
     //alle Veränderungen am store.state laufen über mutations
     mutations: {
 
-        ...vuexfireMutations,
         deleteItem(state, toDelete) {
             store.getters.getActiveList.list = store.getters.getActiveList.list.filter(item => {
                 return item.name !== toDelete;
@@ -32,11 +34,8 @@ const store = createStore({
         addItem(state, newItem) {
             store.getters.getActiveList.list.push({ name: newItem });
         },
-        setActive(state, newActiveList) {
-            if (state.lists.length > 0) {
-                state.lists.forEach(list => list.active = false);
-                store.getters.getListByName(newActiveList).active = true;
-            }
+        setActiveList(state, newActiveList) {
+            state.activeList = newActiveList;
         },
         deleteList(state) {
             state.lists = state.lists.filter(list => !list.active);
@@ -50,6 +49,13 @@ const store = createStore({
             }
             state.lists.push({ name: newList, list: [], active: true });
             
+        },
+        loadLists(state,  data) {
+            // state.listKeys = keys;
+            state.lists = data;
+        },
+        loadListKeys(state, keys) {
+            state.listKeys = keys;
         }
     },
 
@@ -64,23 +70,39 @@ const store = createStore({
         addItem(context, newItem) {
             context.commit("addItem", newItem);
         },
-        setActive(context, list) {
-            context.commit("setActive", list);
+        setActiveList(context, list) {
+            console.log("setActiveList fired")
+            context.commit("setActiveList", list);
         },
         deleteList(context) {
-            context.commit("deleteList");
+            console.log(context.state.lists);
+            context.state.lists.forEach((list, index) => {
+                if (list.name === context.state.activeList) {
+                    const key = context.state.listKeys[index];
+                    db.ref(`lists/${key}`).remove();
+                }
+            });            
         },
         addList(context, newList) {
-            context.commit("addList", newList);
+            db.ref("lists").push({
+                name: newList
+            });
         },
-        bindListsRef: firebaseAction(context => {
-      // context contains all original properties like commit, state, etc
-      // and adds `bindFirebaseRef` and `unbindFirebaseRef`
-      // we return the promise returned by `bindFirebaseRef` that will
-      // resolve once data is ready
-            
-            return context.bindFirebaseRef('lists', db.ref('lists'));
-        }),
+        loadLists(context) {
+            db.ref("lists").on("value", (snapshot) => {
+                const data = snapshot.val();
+                if (data !== null) {
+                    const dataArray = Object.values(data);
+                    const keyArray = Object.keys(data);
+                    context.commit("loadLists", dataArray);
+                    context.commit("loadListKeys", keyArray);
+                }
+                else {
+                    context.commit("loadLists", []);
+                    context.commit("loadListKeys", []);
+                }
+            });
+        },
     },
     
 
@@ -93,12 +115,7 @@ const store = createStore({
                 return list[0];
             };
         },
-        getActiveList(state) {  
-            return state.lists.filter(list => list.active === true)[0];
-        },
-        getLists(state) {
-            return state.lists;
-        }
+        
     }
 });
 

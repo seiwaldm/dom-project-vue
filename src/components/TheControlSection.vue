@@ -5,7 +5,7 @@ lokales Datenfeld
   <section class="control-section">
     <div class="addItems">
       <h2>Add Item</h2>
-      <form action="" class="form-inline">
+      <form class="form-inline">
         <input
           type="text"
           name="newItem"

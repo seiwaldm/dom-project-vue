@@ -2,7 +2,7 @@
 Strings/Daten aus dem vuex-store (this.$store.state) und zeigt sie als Liste an
 
 <template>
-  <ul class="tabcontent list-group active">
+  <ul v-if="visible" class="tabcontent list-group active">
     <SingleItem
       v-for="item in list"
       :key="item.name"
@@ -15,11 +15,11 @@ Strings/Daten aus dem vuex-store (this.$store.state) und zeigt sie als Liste an
 import SingleItem from "./SingleItem.vue";
 
 export default {
-  props: ["name"],
+  props: ["name", "list"],
   components: { SingleItem },
   computed: {
-    list() {
-      return this.$store.getters.getListByName(this.name).list;
+    visible() {
+      return this.name === this.$store.state.activeList;
     },
   },
 };

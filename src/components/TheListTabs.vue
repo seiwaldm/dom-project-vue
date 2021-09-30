@@ -10,10 +10,16 @@
 
 <script>
 export default {
-  props: ["name", "active"],
+  props: ["name"],
+
+  computed: {
+    active() {
+      return this.$store.state.activeList === this.name;
+    },
+  },
   methods: {
-    setActive() {
-      this.$store.dispatch("setActive", this.name);
+    setActive(event) {
+      this.$store.dispatch("setActiveList", event.target.innerText);
     },
   },
 };
