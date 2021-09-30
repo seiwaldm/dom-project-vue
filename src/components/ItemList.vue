@@ -18,6 +18,9 @@ export default {
   props: ["name", "list"],
   components: { SingleItem },
   computed: {
+    // arrayList() {
+    //   return Object.values(this.list);
+    // },
     visible() {
       return this.name === this.$store.state.activeList;
     },

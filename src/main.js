@@ -43,13 +43,6 @@ const store = createStore({
                 state.lists[0].active = true;
             }
         },
-        addList(state, newList) {
-            if (state.lists.length > 0) {
-                state.lists.forEach(list => list.active = false);
-            }
-            state.lists.push({ name: newList, list: [], active: true });
-            
-        },
         loadLists(state,  data) {
             // state.listKeys = keys;
             state.lists = data;
@@ -68,21 +61,19 @@ const store = createStore({
             context.commit("updateFilter", filter);
         },
         addItem(context, newItem) {
-            context.commit("addItem", newItem);
+            if (context.state.activeList !== "") {
+                db.ref(`lists/${store.getters.getActiveListKey}/list`).push({"name": newItem});
+            }
+            else {
+                alert("Liste auswählen!");
+            }
         },
         setActiveList(context, list) {
-            console.log("setActiveList fired")
             context.commit("setActiveList", list);
         },
-        deleteList(context) {
-            console.log(context.state.lists);
-            context.state.lists.forEach((list, index) => {
-                if (list.name === context.state.activeList) {
-                    const key = context.state.listKeys[index];
-                    db.ref(`lists/${key}`).remove();
-                }
-            });            
-        },
+        deleteList() {
+                    db.ref(`lists/${store.getters.getActiveListKey}`).remove();
+                },
         addList(context, newList) {
             db.ref("lists").push({
                 name: newList
@@ -109,13 +100,15 @@ const store = createStore({
     //sind wie computed properties in components
     //führen immer irgendwelche Berechnungen oÄ durch
     getters: {
-        getListByName(state) {
-            return (listName) => {
-                const list = state.lists.filter((list) => list.name === listName);
-                return list[0];
-            };
-        },
-        
+        getActiveListKey(state) {
+            let key = "";
+            state.lists.forEach((list, index) => {
+                if (list.name === state.activeList) {
+                    key = state.listKeys[index];
+                }
+            });
+            return key;
+        }
     }
 });
 
