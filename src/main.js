@@ -23,17 +23,11 @@ const store = createStore({
     //alle Veränderungen am store.state laufen über mutations
     mutations: {
 
-        deleteItem(state, toDelete) {
-            store.getters.getActiveList.list = store.getters.getActiveList.list.filter(item => {
-                return item.name !== toDelete;
-            });
-        },
+        
         updateFilter (state, filter) {
             state.filter = filter;
         },
-        addItem(state, newItem) {
-            store.getters.getActiveList.list.push({ name: newItem });
-        },
+        
         setActiveList(state, newActiveList) {
             state.activeList = newActiveList;
         },
@@ -44,7 +38,6 @@ const store = createStore({
             }
         },
         loadLists(state,  data) {
-            // state.listKeys = keys;
             state.lists = data;
         },
         loadListKeys(state, keys) {
@@ -54,8 +47,15 @@ const store = createStore({
 
     //brauchen wir für asynchronen Code -> IMMER verwenden ist gute Praxis!
     actions: {
-        deleteItem(context, toDelete) {
-            context.commit("deleteItem", toDelete);
+        deleteItem(context, item) {
+            let itemKey = "";
+            const list = store.getters.getActiveList;            
+            list.forEach(([key, value]) => {
+                if (value.name === item) {
+                    itemKey = key;
+                }
+            });
+            db.ref(`lists/${store.getters.getActiveListKey}/list/${itemKey}`).remove();
         },
         updateFilter(context, filter) {
             context.commit("updateFilter", filter);
@@ -108,7 +108,18 @@ const store = createStore({
                 }
             });
             return key;
-        }
+        },
+
+        getActiveList(state) {
+            let list = "";
+            state.lists.forEach((value, index) => {
+                if (state.activeList === value.name) {
+                    list = Object.entries(state.lists[index].list);
+                }
+            });
+            return list;
+        },
+
     }
 });
 
