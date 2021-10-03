@@ -18,8 +18,9 @@ export default {
     },
   },
   methods: {
-    setActive(event) {
-      this.$store.dispatch("setActiveList", event.target.innerText);
+    setActive() {
+      // this.$store.dispatch("setActiveList", event.target.innerText);
+      this.$store.dispatch("setActiveList", this.name);
     },
   },
 };

@@ -41,11 +41,6 @@ export default {
   mounted() {
     this.$store.dispatch("loadLists");
   },
-  methods: {
-    setActive(event) {
-      this.$store.dispatch("setActiveList", event.target.innerText);
-    },
-  },
 };
 </script>
 
