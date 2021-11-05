@@ -30,9 +30,7 @@ export default {
 
   computed: {
     lists() {
-      // this.$store.dispatch("bindListsRef");
       return this.$store.state.lists;
-      // return this.$store.getters.getLists;
     },
     activeList() {
       return this.$store.state.activeList;
