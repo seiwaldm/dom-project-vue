@@ -23,11 +23,11 @@ const store = createStore({
     //alle Veränderungen am store.state laufen über mutations
     mutations: {
 
-        
-        updateFilter (state, filter) {
+
+        updateFilter(state, filter) {
             state.filter = filter;
         },
-        
+
         setActiveList(state, newActiveList) {
             state.activeList = newActiveList;
         },
@@ -37,7 +37,7 @@ const store = createStore({
                 state.lists[0].active = true;
             }
         },
-        loadLists(state,  data) {
+        loadLists(state, data) {
             state.lists = data;
         },
         loadListKeys(state, keys) {
@@ -49,7 +49,7 @@ const store = createStore({
     actions: {
         deleteItem(context, item) {
             let itemKey = "";
-            const list = store.getters.getActiveList;            
+            const list = store.getters.getActiveList;
             list.forEach(([key, value]) => {
                 if (value.name === item) {
                     itemKey = key;
@@ -62,7 +62,7 @@ const store = createStore({
         },
         addItem(context, newItem) {
             if (context.state.activeList !== "") {
-                db.ref(`lists/${store.getters.getActiveListKey}/list`).push({"name": newItem});
+                db.ref(`lists/${store.getters.getActiveListKey}/list`).push({ "name": newItem });
             }
             else {
                 alert("Liste auswählen!");
@@ -72,14 +72,21 @@ const store = createStore({
             context.commit("setActiveList", list);
         },
         deleteList() {
-                    db.ref(`lists/${store.getters.getActiveListKey}`).remove();
-                },
+            db.ref(`lists/${store.getters.getActiveListKey}`).remove();
+        },
         addList(context, newList) {
             db.ref("lists").push({
                 name: newList
             });
         },
         loadLists(context) {
+            // fetch("https://dom-project-vue-default-rtdb.europe-west1.firebasedatabase.app/lists.json")
+            //     .then(response => response.json())
+            //     .then(data => {
+            //         const dataArray = Object.values(data);
+            //         context.commit("loadLists", dataArray);
+            //     });
+
             db.ref("lists").on("value", (snapshot) => {
                 const data = snapshot.val();
                 if (data !== null) {
@@ -95,7 +102,7 @@ const store = createStore({
             });
         },
     },
-    
+
 
     //sind wie computed properties in components
     //führen immer irgendwelche Berechnungen oÄ durch
